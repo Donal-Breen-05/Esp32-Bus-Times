@@ -1,7 +1,8 @@
 //headers
 #include "config.h"
 #include "wifi_manager.h"
-#include "transport_api.h"
+#include "tfi_api.h"
+#include "set_time.h"
 
 //setup
 void setup() {
@@ -14,8 +15,9 @@ void setup() {
   Serial.println("   ESP-32 Bus Times");
   Serial.println("==============================\n");
 
-  //wifi
-  connect_wifi();
+  //wifi & time 
+  connect_to_wifi();
+  setup_time(); 
 
 }// end setup
 

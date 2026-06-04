@@ -1,3 +1,6 @@
-#pragma once
+#ifndef TFI_API_H
+#define TFI_API_H
 
-bool getBusTimes();
+void get_bus_times();
+
+#endif

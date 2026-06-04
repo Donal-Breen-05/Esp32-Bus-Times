@@ -7,7 +7,7 @@
 #include "wifi_manager.h"
 
 //connect wifi
-void connect_wifi(){
+void connect_to_wifi(){  // had to rename(similar name to inbuilt function)
 
   int attempts = 0 ;
 

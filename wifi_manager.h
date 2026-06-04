@@ -1,3 +1,6 @@
-#pragma once
+#ifndef WIFI_MANAGER_H
+#define WIFI_MANAGER_H
 
-bool connectWiFi();
+void connect_to_wifi();
+
+#endif
