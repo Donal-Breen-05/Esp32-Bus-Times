@@ -55,6 +55,27 @@ String read_chunked_body(WfifClientSecure &client) {
   return result; 
 }// read_chunked_body
 
+
+//YYYY-MM-DDTHH:MM:SS into minutes since midnight
+int to_minutes(const String &timeStr) {
+  if (timeStr.length() < 5) return -1;
+  
+  int tPos = timeStr.indexOf('T');
+  if (tPos != -1) {
+    
+    int hours = timeStr.substring(tPos + 1, tPos + 3).toInt();
+    int mins  = timeStr.substring(tPos + 4, tPos + 6).toInt();
+    return hours * 60 + mins;
+    
+  }//end if 
+
+
+  int hours = timeStr.substring(0, 2).toInt();
+  int mins  = timeStr.substring(3, 5).toInt();
+  return hours * 60 + mins;
+  
+}//to minuites 
+
 //fetch data from the api
 void get_bus_times(){
 
@@ -206,6 +227,9 @@ void get_bus_times(){
     
   }// end if 
 
+  int now_mins = to_minutes(now);
+  int count = 0 ; 
+
   for(JsonObject dep : departures) {
 
     String route = dep["serviceNumber"] | "";
@@ -214,10 +238,33 @@ void get_bus_times(){
 
     if( (time == "") time = dep["scheduledDeparture"] | "") {
 
-      Serial.println(route + " -> " + time + " (" + dest + ")");
-
+      // show the mins or due 
+      String label = "";
+      int dep_mins = to_minutes(time);
+      if (now_mins >= 0 && dep_mins >= 0) {
+        
+        int diff = dep_mins - now_mins;
+        if (diff < 0) {
+          
+          label = "departed";
+          
+        } else if (diff < 1) {
+          
+          label = "Due";
+        
+        } else {
+          
+          label = String(diff) + " min" + (diff == 1 ? "" : "s");
+        
+        }// end else 
+        
+      }//end if
+      
     } // end if 
 
+    Serial.println(route + " -> " + label + " (" + dest + ")");
+    count++; 
+    
   }// end for 
 
 }//end bus times
