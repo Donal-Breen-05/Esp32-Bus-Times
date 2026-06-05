@@ -151,33 +151,42 @@ void get_bus_times(){
 
   }// end if 
   
+  //detect chunked transfer encoding
+  bool isChunked = false;
+
+  while (client.connected()) {
+    
+    String line = client.readStringUntil('\n');
+    line.trim();
+    
+    if (line.equalsIgnoreCase("transfer-encoding: chunked")) {
+      
+      isChunked = true;
+      
+    }// end if 
+    
+    if (line.length() == 0) break; //end of header 
+    
+  }// end while 
   
-  
-  delay(100);
- 
-  StaticJsonDocument<256> filter;
-
-  filter["stopDepartures"][0]["serviceNumber"] = true; // 15A , F2 , 150 etc 
-  filter["stopDepartures"][0]["destination"] = true; // dame st , charlestown ........
-  filter["stopDepartures"][0]["realTimeDeparture"] = true; 
-  filter["stopDepartures"][0]["scheduledDeparture"] = true; 
-
-  //json document
-  StaticJsonDocument<4096> doc;
-
-
-   //parse json
-  DeserializationError error =
-
-    deserializeJson(
-
-      doc,
-      client,
-      DeserializationOption::Filter(filter)
-
-    );
-
+  // Read body
+  String payload = isChunked ? read_chunked_body(client) : client.readString();
   client.stop();
+
+  Serial.println("RAW JSON:");
+  Serial.println(payload);
+
+  //empty resonse 
+  if (payload.length() < 10) {
+    
+    Serial.println("ERROR - empty payload");
+    return;
+    
+  }//end if 
+
+  //32kb 
+  DynamicJsonDocument doc(32768);
+  DeserializationError error = deserializeJson(doc, payload);
 
   //if error
   if(error) {
@@ -188,16 +197,13 @@ void get_bus_times(){
 
   }//end if
   
-  
-  //print departures
-  JsonArray departures =
-    doc["stopDepartures"];
-
-  //if departures is empty 
-  if (departures.isNull()) { 
-
-    Serial.println("Error - No departures"); 
-
+  // check departures exist 
+  JsonArray departures = doc["stopDepartures"];
+  if (departures.isNull() || departures.size() == 0) {
+    
+    Serial.println("No departures found");
+    return;
+    
   }// end if 
 
   for(JsonObject dep : departures) {
@@ -206,13 +212,11 @@ void get_bus_times(){
     String destination = dep["destination"] | "";
     String departure = dep["realTimeDeparture"] | "";
 
-    if(departure == "") {
+    if( (time == "") time = dep["scheduledDeparture"] | "") {
 
-      departure = dep["scheduledDeparture"] | "";
+      Serial.println(route + " -> " + time + " (" + dest + ")");
 
     } // end if 
-
-    Serial.println(route + " -> " + departure + " (" + destination + ")" );
 
   }// end for 
 
