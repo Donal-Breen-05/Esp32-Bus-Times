@@ -8,6 +8,53 @@
 #include "set_time.h"
 #include "tfi_api.h"
 
+String read_chunked_body(WfifClientSecure &client) { 
+
+  String result = ""; 
+
+  while (client.connected() || client.available()) {
+    
+    // Read chunk size line (hex digits followed by \r\n)
+    String sizeLine = client.readStringUntil('\n');
+    sizeLine.trim();
+
+    // Strip chunk extensions 
+    int semiPos = sizeLine.indexOf(';');
+    if (semiPos != -1) sizeLine = sizeLine.substring(0, semiPos);
+
+    if (sizeLine.length() == 0) continue;
+
+    long chunkSize = strtol(sizeLine.c_str(), nullptr, 16);
+    if (chunkSize == 0) break; // last chunk
+
+    // Read exactly chunkSize bytes
+    String chunk = "";
+    long remaining = chunkSize;
+    
+    while (remaining > 0 && (client.connected() || client.available())) {
+      
+      if (client.available()) {
+        
+        chunk += (char)client.read();
+        remaining--;
+        
+      } else {
+        
+        delay(5);
+        
+      }//end else 
+      
+    }// end while
+    
+    result += chunk; 
+
+    // consume trailing \r\n 
+    client.readStringUntil('n');
+    
+  }// end while 
+  return result; 
+}// read_chunked_body
+
 //fetch data from the api
 void get_bus_times(){
 
@@ -73,29 +120,25 @@ void get_bus_times(){
 
   client.flush();
 
-  //waits for availability 
+  //wait for response 
+  unsigned long timeout = millis(); 
   while(!client.available()) {
-
-    delay(10);
-
-    if(!client.connected()) {
-
-        Serial.println(
-            "ERROR - server disconnected"
-        );
-
-        return;
-
+    delay(10); 
+    if (!client.connected()) {
+      Serial.println("ERROR - server disconnected");
+      return;
+    }// end if 
+    if (millis() - timeout > 10000) {
+      Serial.println("ERROR - response timeout");
+      return;
     }// end if 
 
-  }//end while 
+  }// while 
 
   
   //check http status 
   String status = client.readStringUntil('\n');
-
   status.trim();
-
   Serial.println(status);
 
   // if bad http response
@@ -108,19 +151,7 @@ void get_bus_times(){
 
   }// end if 
   
-  //skip remaining headers 
-  while(client.connected()) {
-
-    String line = client.readStringUntil('\n');
-
-    line.trim();
-
-    if(line.length() == 0) {
-
-        break;
-    }// end if 
-
-  }// while 
+  
   
   delay(100);
  
