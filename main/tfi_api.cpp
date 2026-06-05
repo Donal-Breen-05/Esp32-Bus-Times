@@ -77,7 +77,7 @@ int to_minutes(const String &timeStr) {
 }//to minuites 
 
 //fetch data from the api
-void get_bus_times(){
+int get_bus_times(Bus busArr[4){
 
   //if wifi not connected
   if(WiFi.status() != WL_CONNECTED) {
@@ -265,6 +265,12 @@ void get_bus_times(){
       
     } // end if 
 
+    //update struct obj 
+    busArr[count].route = route; 
+    busArr[count].numMins = label; 
+    busArr[count].destination = dest; 
+    
+    //debug print 
     Serial.println(route + " -> " + label + " (" + dest + ")");
     count++; 
     
