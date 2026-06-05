@@ -232,6 +232,9 @@ void get_bus_times(){
 
   for(JsonObject dep : departures) {
 
+    //only show first 4 
+    if (count >= 4) break; 
+
     String route = dep["serviceNumber"] | "";
     String destination = dep["destination"] | "";
     String departure = dep["realTimeDeparture"] | "";
