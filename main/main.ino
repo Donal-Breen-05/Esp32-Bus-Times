@@ -4,6 +4,7 @@
 #include "tfi_api.h"
 #include "set_time.h"
 #include "display.h"
+#include "server.h"  
 
 //setup
 void setup() {
@@ -25,6 +26,7 @@ void setup() {
   //wifi & time 
   display_print(20, 20, "connecting......");
   connect_to_wifi();
+  start_server(); 
   display_clear();
   
   //setup time 
@@ -38,9 +40,10 @@ void setup() {
 
 //main loop
 void loop() {
-
+  
+  server.handleClient();
   display_clear();
-
+  
 
   Bus busArr[3];
   int count = get_bus_times(busArr);
