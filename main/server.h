@@ -1,5 +1,6 @@
 #pragma once 
 #include "config.h" 
+#include <WiFi.h>
 
 inline void start_server(){ 
   
