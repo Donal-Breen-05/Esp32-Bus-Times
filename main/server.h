@@ -25,7 +25,7 @@ inline void start_server(){
       
       if (server.hasArg("stop")) { 
           
-        stop_num - server.arg("stop"); 
+        stop_num = server.arg("stop"); 
         Serial.println("stop number updated to " + stop_num);
 
 

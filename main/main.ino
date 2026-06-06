@@ -10,7 +10,7 @@
 void setup() {
 
   Serial.begin(115200); //set baud rate
-  delay(1000);
+
 
   display_init();
 
@@ -41,9 +41,18 @@ void setup() {
 //main loop
 void loop() {
   
+  // server 
   server.handleClient();
-  display_clear();
+   
   
+  // non blocking timer 
+  static unsigned long lastUpdate = 0;
+  if (millis() - lastUpdate < 30000) return;
+  lastUpdate = millis();
+  
+  //clear display 
+  display_clear();
+
 
   Bus busArr[3];
   int count = get_bus_times(busArr);
@@ -72,6 +81,6 @@ void loop() {
   display_print(230, 220, now.c_str());
 
   //wait 30 seconds 
-  delay(30000);
+  //delay(30000);
 
 }// end loop 
