@@ -1,5 +1,7 @@
 #pragma once
 
+#include <WebServer.h>
+
 // adding inline means that the config variables are only made once 
 
 //config
@@ -25,3 +27,6 @@ inline String getStopId() {
     return "8230DB00" + stop_num;
 
 }//end getStopId 
+
+//webserver to change the stop number 
+inline WebServer server(80); 
