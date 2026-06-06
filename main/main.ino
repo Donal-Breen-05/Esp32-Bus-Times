@@ -20,17 +20,15 @@ void setup() {
   
   //title
   display_print(10, 20, "ESP-32 Bus Times");
-  delay(1000)
   display_clear();
 
   //wifi & time 
   display_print(20, 20, "connecting......");
-  delay(1000)
   connect_to_wifi();
   display_clear();
   
+  //setup time 
   display_print(20, 20, "Setting time......");
-  delay(1000)
   setup_time(); 
   display_clear();
   
@@ -41,23 +39,36 @@ void setup() {
 //main loop
 void loop() {
 
-  //clear 
-  display_clear(); 
+  display_clear();
 
-  // struct array 
-  Bus busArr[4];
+
+  Bus busArr[3];
   int count = get_bus_times(busArr);
+
+  //height for each entry 
+  int blockHeight = 75; 
 
   for (int i = 0; i < count; i++) {
 
-    // print to screen the bus route , time , destination 
-    String line = busArr[i].route + " -> " + busArr[i].numMins + " (" + busArr[i].destination + ")";
+    int blockY = 10 + (blockHeight * i); // top of this bus block
 
-    display_print(10 , 20 * i , line.c_str()); 
+    // line 1: route + mins  e.g "F2   5 mins"
+    display_print(10, blockY,  busArr[i].route.c_str());
+    display_print(190, blockY, busArr[i].numMins.c_str());
+    
+    // line 2: destination
+    display_print(10, blockY + 25, busArr[i].destination.c_str());
+
+    // divider line below this block
+    display_line(10, blockY + 50, 630, blockY + 50, COLOR_ORANGE);
 
   }// end for 
 
-  //wait 30 seconds
+  // time in bottom right
+  String now = get_time();
+  display_print(230, 220, now.c_str());
+
+  //wait 30 seconds 
   delay(30000);
 
-}//end loop
+}// end loop 
