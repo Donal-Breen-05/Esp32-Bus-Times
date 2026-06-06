@@ -52,20 +52,20 @@ void loop() {
 
     int blockY = 10 + (blockHeight * i); // top of this bus block
 
-    // line 1: route + mins  e.g "F2   5 mins"
+    // line 1 route + mins "F2   5 mins"
     display_print(10, blockY,  busArr[i].route.c_str());
-    display_print(190, blockY, busArr[i].numMins.c_str());
+    display_print(180, blockY, busArr[i].numMins.c_str());
     
-    // line 2: destination
+    // line 2 destination "Charlestown"
     display_print(10, blockY + 25, busArr[i].destination.c_str());
 
-    // divider line below this block
+    // divider line below this block    
     display_line(10, blockY + 50, 630, blockY + 50, COLOR_ORANGE);
 
   }// end for 
 
   // time in bottom right
-  String now = get_time();
+  String now = get_time_hhmm();
   display_print(230, 220, now.c_str());
 
   //wait 30 seconds 

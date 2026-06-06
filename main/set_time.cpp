@@ -1,8 +1,12 @@
 #include <time.h>
 #include <Arduino.h>
 
-void setup_time()
-{
+void setup_time() {
+
+    // ireland timezone
+    setenv("TZ", "IST-1GMT0,M10.5.0,M3.5.0/1", 1);
+    tzset();
+
     configTime(
         0,      // GMT offset
         3600,   // daylight savings offset (Ireland summer)
@@ -44,3 +48,17 @@ String get_time()
 
     return String(buffer);
 }
+
+String get_time_hhmm() {
+
+    struct tm timeinfo;
+
+    if (!getLocalTime(&timeinfo)) {
+        return "--:--";
+    }
+
+    char buffer[6];
+    strftime(buffer, sizeof(buffer), "%H:%M", &timeinfo);
+
+    return String(buffer);
+}//get time hhmmm

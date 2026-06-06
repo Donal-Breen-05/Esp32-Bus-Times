@@ -5,5 +5,6 @@
 
 void setup_time();
 String get_time();
+String get_time_hhmm();
 
 #endif
