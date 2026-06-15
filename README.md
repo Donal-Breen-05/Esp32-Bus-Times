@@ -1,31 +1,47 @@
 # Esp32-Bus-Times
+An overengineered solution to bus times written in C++ for the ESP32 using a "CYD" - Cheap Yellow Display
+- Uses the TFI Live API to get times for buses for a specified stop
+- Hosts a web server to allow the user to change what bus stop they want to track
+- Displays the current time in 24-hour format
 
-An overengineered solution to bus times written in C++ for the Esp32 using a "CYD" - cheap yellow display 
-- uses the tfi live api to get times for busses for a specified stop
-- hosts a web server to allow the user to change what bus stop they want to track
-- displays the current time in 24 hour
-
---- 
-# images 
-
-## device 
-![stop1112](ReadMeImages/stop1112.jpg) 
-
-![stop2324](ReadMeImages/stop2324.jpg) 
+---
+# Images
+## Device
 
 
-## Web Server 
+<table>
+  <tr>
+    <td align="center" style="border: 2px solid #ccc; padding: 10px;">
+      <img src="ReadMeImages/stop1112.jpg" width="300" style="transform: rotate(+90deg);" /><br/>
+      <em>Stop 1112</em>
+    </td>
+    <td align="center" style="border: 2px solid #ccc; padding: 10px;">
+      <img src="ReadMeImages/stop2324.jpg" width="300" style="transform: rotate(-180deg);" /><br/>
+      <em>Stop 2324</em>
+    </td>
+  </tr>
+</table>
 
-![ServerChangeStop](ReadMeImages/server1.jpg) 
-![ServerSuccess](ReadMeImages/server2.jpg) 
+## Web Server
 
+<table>
+  <tr>
+    <td align="center" style="border: 2px solid #ccc; padding: 10px;">
+      <img src="ReadMeImages/server1.jpg" width="300" /><br/>
+      <em>Change Stop</em>
+    </td>
+    <td align="center" style="border: 2px solid #ccc; padding: 10px;">
+      <img src="ReadMeImages/server2.jpg" width="300" /><br/>
+      <em>Success</em>
+    </td>
+  </tr>
+</table>
 
---- 
-# Usage / instalation 
+---
+# Usage / Installation
+- Clone the repository
+- Install the required libraries: `ArduinoJSON.h` and `TFT_eSPI.h`
+- Flash the files using **Arduino IDE**
+- Use the web server to set the stop number to your bus stop
 
-- Clone repository
-- install required libraries "ArduinoJSON.h" and "TFT_eSPI.h"
-- flash the files with the **ArduinoIDE** 
-- Use Webserver to set stop number to your Bus stop 
-
-*Note as i used an Esp32 cyd my code may not work on all other esp32 cyd modules as they have different pin layouts and drivers so there may be issues with display code for some users, and may need to edit their User_setup.h file to allow their display to work with the code*
+*Note: As I used an ESP32 CYD, my code may not work on all other ESP32 CYD modules as they have different pin layouts and drivers, so there may be issues with the display code for some users. You may need to edit your `User_setup.h` file to allow your display to work with the code.*
